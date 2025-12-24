@@ -29,7 +29,9 @@ def main():
                 running = False
 
         # Game logic would go here (using dt for time-based movement)
-
+        # 🔹 UPDATE (lógica del juego)
+        player.update(dt)
+        
         log_state()
 
         # Draw everything
