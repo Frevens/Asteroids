@@ -15,6 +15,11 @@ def main():
     clock = pygame.time.Clock()  # Correct way to instantiate the Clock
     dt = 0                       # Delta time in seconds
 
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+
     player = Player(
     SCREEN_WIDTH / 2,
     SCREEN_HEIGHT / 2
@@ -30,14 +35,15 @@ def main():
 
         # Game logic would go here (using dt for time-based movement)
         # 🔹 UPDATE (lógica del juego)
-        player.update(dt)
+        updatable.update(dt)
         
         log_state()
 
         # Draw everything
         screen.fill("black")
-        # Draw the player in every frame
-        player.draw(screen)
+        # Draw the player in every frame. 
+        for player in drawable:
+            player.draw(screen)
         # (later you'll draw your game objects here)
         pygame.display.flip()
 
