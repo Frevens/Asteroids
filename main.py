@@ -1,7 +1,13 @@
 import pygame
+import sys
+import time
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from logger import log_state
+from logger import log_state, log_event
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+
+
 
 
 pygame.init()
@@ -19,12 +25,15 @@ def main():
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     Player.containers = (updatable, drawable)
+    asteroids = pygame.sprite.Group()
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
 
     player = Player(
     SCREEN_WIDTH / 2,
     SCREEN_HEIGHT / 2
     )
-
+    asteroid_field = AsteroidField()
 
     running = True
     while running:
@@ -36,20 +45,32 @@ def main():
         # Game logic would go here (using dt for time-based movement)
         # 🔹 UPDATE (lógica del juego)
         updatable.update(dt)
+
+        
+
         
         log_state()
 
         # Draw everything
         screen.fill("black")
         # Draw the player in every frame. 
-        for player in drawable:
-            player.draw(screen)
+        for object in drawable:
+            object.draw(screen)
+        
         # (later you'll draw your game objects here)
         pygame.display.flip()
 
         # 2 & 3. Limit to 60 FPS and get delta time
         # tick() returns milliseconds since last call → convert to seconds
         dt = clock.tick(60) / 1000.0
+
+        #Checking collitions
+        for asteroid in asteroids:
+            if player.collides_with(asteroid):
+                log_event("player_hit")
+                print("Game over!")
+                time.sleep(1) #se pause por 1 segundos
+                sys.exit()
 
         
 
