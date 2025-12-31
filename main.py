@@ -18,9 +18,9 @@ def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
     print(f"Screen width: {SCREEN_WIDTH}\nScreen height: {SCREEN_HEIGHT}")
 
-    # 1. Create a clock object and dt variable before the loop
-    clock = pygame.time.Clock()  # Correct way to instantiate the Clock
-    dt = 0                       # Delta time in seconds
+    # 1. Crea un reloj y una variable de tiempo delta dt.
+    clock = pygame.time.Clock()  # Inicia el reloj
+    dt = 0                       # Delta time en segundos
 
 
     updatable = pygame.sprite.Group()
@@ -45,7 +45,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        # Game logic would go here (using dt for time-based movement)
+        # Lógica del juego va acá (usa dt para movimientos basados en tiempo (time-based movement)).
         # 🔹 UPDATE (lógica del juego)
         updatable.update(dt)
 
@@ -54,26 +54,35 @@ def main():
         
         log_state()
 
-        # Draw everything
+        # Dibuja todo
         screen.fill("black")
-        # Draw the player in every frame. 
+        # Dibuja Player en cada cuadro. 
         for object in drawable:
             object.draw(screen)
         
         # (later you'll draw your game objects here)
         pygame.display.flip()
 
-        # 2 & 3. Limit to 60 FPS and get delta time
-        # tick() returns milliseconds since last call → convert to seconds
+        # 2 & 3. Limita a 60 FPS y obtiene delta time
+        # tick() regresa milisegundos desde la última llamada → convierte a segundos
         dt = clock.tick(60) / 1000.0
 
-        #Checking collitions
+        #Chequea coliciones
         for asteroid in asteroids:
             if player.collides_with(asteroid):
                 log_event("player_hit")
                 print("Game over!")
-                time.sleep(1) #se pause por 1 segundos
+                time.sleep(1) #se pause por 1 segundo
                 sys.exit()
+        
+        # 🔫 Colisiones disparos ↔ asteroides
+        for asteroid in asteroids:
+            for shot in shots:
+                if shot.collides_with(asteroid):
+                    log_event("asteroid_shot")
+                    shot.kill()
+                    asteroid.split()
+                    break  # el asteroide ya no existe
 
         
 
